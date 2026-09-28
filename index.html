@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Radar de Guiche</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoXpeZmfPtlyE=" crossorigin="">
+  <style>
+    :root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#101827;color:#f1f5f9}
+    *{box-sizing:border-box}body{margin:0}header{padding:17px 18px 12px;background:#111d30}h1{margin:0;font-size:1.5rem}p{margin:5px 0;color:#aebbd0;font-size:.9rem}.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}button,select{background:#19334e;color:#fff;border:1px solid #47607a;border-radius:9px;padding:10px 12px;font:inherit}button{cursor:pointer;background:#197d9d;border:0;font-weight:650}button:disabled{opacity:.55}#map{height:52vh;min-height:330px;background:#182b3e}main{max-width:1100px;margin:auto}.panel{padding:14px 18px}.status{color:#bad8e1;min-height:24px;font-size:.9rem}ul{list-style:none;padding:0;margin:9px 0 28px;display:grid;gap:8px}li{border:1px solid #294159;background:#17263a;border-radius:11px;padding:12px 14px;cursor:pointer}li:hover{background:#203750}.row{display:flex;justify-content:space-between;gap:12px}.muted{color:#aebbd0;font-size:.85rem;margin-top:5px}.plane-icon{background:none;border:0;text-shadow:0 1px 5px #000;font-size:24px;line-height:28px;text-align:center}.leaflet-popup-content{color:#172334}a{color:#6bc7e6}.leaflet-popup-content a{color:#006d8a}small{color:#99aabe}
+  </style>
+</head>
+<body><main><header><h1>✈ Radar de Guiche</h1><p>Quels avions passent près de chez nous ?</p><div class="controls"><label for="radius">Rayon</label><select id="radius"><option value="10">10 km</option><option value="30" selected>30 km</option><option value="50">50 km</option><option value="100">100 km</option></select><button id="refresh">Actualiser</button><small>Actualisation toutes les 60 s lorsque la page est ouverte</small></div></header><div id="map" aria-label="Carte des avions autour de Guiche"></div><section class="panel"><div id="status" class="status" role="status">Chargement…</div><ul id="list"></ul><small>Positions ADS-B/MLAT communiquées par Airplanes.live. Couverture et données variables ; ne pas utiliser pour la navigation.</small></section></main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+const HOME=[43.5128,-1.2028], API='https://api.airplanes.live/v2/point/43.5128/-1.2028/55';
+const map=L.map('map').setView(HOME,10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap contributors'}).addTo(map);
+L.circleMarker(HOME,{radius:7,color:'#fff',weight:2,fillColor:'#11b9bd',fillOpacity:1}).addTo(map).bindPopup('Centre de Guiche');
+let ring=L.circle(HOME,{radius:30000,color:'#51d5da',weight:1,fillOpacity:.04}).addTo(map), markers=L.layerGroup().addTo(map), busy=false;
+const $=id=>document.getElementById(id), km=nm=>nm*1.852;
+function distance(lat,lon){const [a,b]=HOME.map(x=>x*Math.PI/180),c=lat*Math.PI/180,d=lon*Math.PI/180,x=Math.sin((c-a)/2)**2+Math.cos(a)*Math.cos(c)*Math.sin((d-b)/2)**2;return 6371*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+function safe(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function altitude(a){if(a.alt_baro==='ground')return 'Au sol';const ft=Number(a.alt_baro??a.alt_geom);return Number.isFinite(ft)?`${Math.round(ft*.3048).toLocaleString('fr-FR')} m`:'Altitude inconnue'}
+function render(payload,source){markers.clearLayers();$('list').replaceChildren();const radius=Number($('radius').value);ring.setRadius(radius*1000);
+  const planes=(payload.ac||[]).filter(a=>Number.isFinite(Number(a.lat))&&Number.isFinite(Number(a.lon))&&a.lat!=null&&a.lon!=null).map(a=>({...a,dist:distance(Number(a.lat),Number(a.lon))})).filter(a=>a.dist<=radius).sort((a,b)=>a.dist-b.dist);
+  const ts=payload.now?new Date(Number(payload.now)*1000):new Date(payload.fetched_at||Date.now());const age=Math.max(0,Math.round((Date.now()-ts.getTime())/60000));
+  $('status').textContent=`${planes.length} appareil${planes.length>1?'s':''} dans un rayon de ${radius} km · ${source} · données de ${ts.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}${age>2?` (il y a ${age} min)`:''}`;
+  if(!planes.length){const li=document.createElement('li');li.textContent='Aucun avion repéré dans ce rayon pour le moment.';$('list').append(li)}
+  for(const a of planes){const id=(a.flight||a.r||a.hex||'Appareil').trim(), speed=Number(a.gs), speedText=Number.isFinite(speed)?`${Math.round(km(speed))} km/h`:'Vitesse inconnue', detail=`${safe(a.t||'Type inconnu')} · ${altitude(a)} · ${speedText}`, link=a.hex?`<a href="https://globe.airplanes.live/?icao=${encodeURIComponent(a.hex)}" target="_blank" rel="noopener noreferrer">Voir sur Airplanes.live ↗</a>`:'';
+    const icon=L.divIcon({className:'plane-icon',html:`<span style="display:inline-block;transform:rotate(${Number(a.track)||0}deg)">✈</span>`,iconSize:[28,28],iconAnchor:[14,14]});const marker=L.marker([a.lat,a.lon],{icon}).addTo(markers).bindPopup(`<strong>${safe(id)}</strong><br>${detail}<br>${a.dist.toFixed(1)} km de Guiche<br>${link}`);
+    const li=document.createElement('li');li.innerHTML=`<div class="row"><strong>${safe(id)}</strong><span>${a.dist.toFixed(1)} km</span></div><div class="muted">${detail}</div>`;li.onclick=()=>{map.setView([a.lat,a.lon],Math.max(map.getZoom(),11));marker.openPopup()};$('list').append(li)
+  }
+}
+async function refresh(){if(busy)return;busy=true;$('refresh').disabled=true;$('status').textContent='Recherche des avions…';let error='';
+  try{const res=await fetch(API,{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!res.ok)throw Error(`API ${res.status}`);const data=await res.json();if(!Array.isArray(data.ac))throw Error('Format inattendu');render(data,'direct')}catch(e){error=e.message;try{const res=await fetch(`data.json?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw Error(`HTTP ${res.status}`);const data=await res.json();if(!Array.isArray(data.ac))throw Error('Données indisponibles');render(data,'copie GitHub')}catch{markers.clearLayers();$('status').textContent=`Données indisponibles. Réessaie dans quelques minutes. (${error})`}}
+  finally{busy=false;$('refresh').disabled=false}
+}
+$('refresh').onclick=refresh;$('radius').onchange=refresh;refresh();setInterval(()=>{if(!document.hidden)refresh()},60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+</script></body></html>
