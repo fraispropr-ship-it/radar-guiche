@@ -115,7 +115,7 @@ function modelCell(a){const name=String(a.model||a.desc||'').trim(),code=String(
 function catTag(label){const cls=label==='Militaire'?'tag mil':label==='Civil présumé'?'tag civ':'tag';return `<span class="${cls}">${label}</span>`}
 function icaoLink(hex){return hex?`<a href="https://globe.airplanes.live/?icao=${encodeURIComponent(hex)}" target="_blank" rel="noopener noreferrer">${safe(String(hex).toUpperCase())} ↗</a>`:unknown('—')}
 const ordinal=n=>n===1?'1er':`${n}e`;
-function repeatTag(n,prev){return n>1?`<span class="tag repeat"${prev?` title="Passage précédent : ${safe(dateText(prev))}"`:''}>🔁 ${ordinal(n)} passage</span>`:''}
+function repeatTag(n,prev){return n>1?`<span class="tag repeat">🔁 ${ordinal(n)} passage${prev?` · précédent : ${safe(dateText(prev))}`:''}</span>`:''}
 function priorPassages(hex){const visits=history[String(hex||'').toLowerCase()]?.passages||[],cut=Date.now()-30*60000;return visits.filter(v=>Date.parse(v.last_seen)<cut)}
 function liveRepeatTag(prior){return prior.length?`<span class="tag repeat" title="Dernière fois : ${safe(dateText(prior.at(-1).last_seen))}">🔁 Déjà passé ${prior.length} fois</span>`:''}
 function emptyRow(tbody,cols,text){const tr=document.createElement('tr');tr.innerHTML=`<td class="empty" colspan="${cols}">${text}</td>`;tbody.append(tr)}
