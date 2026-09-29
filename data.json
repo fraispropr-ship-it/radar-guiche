@@ -1,1 +1,1 @@
-{"now":1790722149501,"fetched_at":"2026-09-29T22:49:10.119009+00:00","source":"ADSB.lol","ac":[]}
+{"now":1790722595501,"fetched_at":"2026-09-29T22:56:36.004897+00:00","source":"ADSB.lol","ac":[{"hex":"020140","flight":"MAC228A ","r":"CN-NMN","t":"A320","category":"A3","type":"adsb_icao","lat":43.871853,"lon":-0.944236,"alt_baro":37050,"alt_geom":38900,"gs":421.3,"track":206.2,"kind":"avion"}]}
