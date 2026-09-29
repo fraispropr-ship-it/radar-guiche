@@ -32,13 +32,13 @@
     td.empty{white-space:normal;color:#aebbd0;font-weight:400;position:static}
     .code{color:#8fb3c9;font-size:.8rem}.unknown{color:#6f8196}.owner{color:#cfe3ef;font-style:italic;font-weight:500}
     .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.78rem;background:#294159;color:#cfdbe8}
-    .tag.mil{background:#6b2f2f;color:#ffd9d9}.tag.civ{background:#1d4d5c;color:#c9f1fb}
+    .tag.mil{background:#6b2f2f;color:#ffd9d9}.tag.repeat{background:#6b4e12;color:#ffe2a8;margin-left:6px}.plane-icon.repeat span{filter:drop-shadow(0 0 5px #ffb020) drop-shadow(0 0 2px #ffb020)}.tag.civ{background:#1d4d5c;color:#c9f1fb}
     .num{text-align:right}
   </style>
 </head>
 <body><main><header><h1>✈ Radar de Guiche</h1><p>Tout ce qui vole près de chez nous : avions, hélicoptères, planeurs, ULM…</p><div class="controls"><label for="radius">Rayon</label><select id="radius"><option value="10">10 km</option><option value="30" selected>30 km</option><option value="50">50 km</option><option value="100">100 km</option></select><label for="kind">Genre</label><select id="kind"><option value="all" selected>Tout ce qui vole</option><option value="helico">Hélicoptères</option><option value="avion">Avions</option><option value="autre">Autres et inconnus</option></select><button id="refresh">Actualiser</button><small>Actualisation toutes les 60 s lorsque la page est ouverte</small></div></header><div id="map" aria-label="Carte des aéronefs autour de Guiche"></div><section class="panel"><div id="status" class="status" role="status">Chargement…</div><ul id="list"></ul>
 <h2 class="history-title">Historique des passages</h2>
-<p class="history-note">Enregistré automatiquement dans un rayon de 30 km autour de Guiche, ainsi que tous les vols au départ ou à l’arrivée de Biarritz (tape « BIQ » pour les retrouver). Relevé environ toutes les 5 minutes. Un même passage reste groupé si l’appareil est revu dans les 30 minutes.</p>
+<p class="history-note">Enregistré automatiquement dans un rayon de 30 km autour de Guiche, ainsi que tous les vols au départ ou à l’arrivée de Biarritz (tape « BIQ » pour les retrouver). Relevé environ toutes les 5 minutes. 🔁 signale un appareil déjà venu (tape « déjà vu » pour ne voir que ceux-là). Un même passage reste groupé si l’appareil est revu dans les 30 minutes.</p>
 <input id="history-search" class="history-search" type="search" placeholder="Rechercher une compagnie, un aéroport, un vol, « hélicoptère »…" aria-label="Rechercher dans l’historique">
 
 <h3 class="block-title">Vols de la journée</h3>
@@ -115,9 +115,13 @@ function operatorCell(r,a){if(r.airline)return `<span title="${safe(r.airline)}"
 function modelCell(a){const name=String(a.model||a.desc||'').trim(),code=String(a.t||'').trim();if(!name&&!code)return unknown('—');return name?`${safe(name)}${code?` <span class="code">${safe(code)}</span>`:''}`:safe(code)}
 function catTag(label){const cls=label==='Militaire'?'tag mil':label==='Civil présumé'?'tag civ':'tag';return `<span class="${cls}">${label}</span>`}
 function icaoLink(hex){return hex?`<a href="https://globe.airplanes.live/?icao=${encodeURIComponent(hex)}" target="_blank" rel="noopener noreferrer">${safe(String(hex).toUpperCase())} ↗</a>`:unknown('—')}
+const ordinal=n=>n===1?'1er':`${n}e`;
+function repeatTag(n,prev){return n>1?`<span class="tag repeat"${prev?` title="Passage précédent : ${safe(dateText(prev))}"`:''}>🔁 ${ordinal(n)} passage</span>`:''}
+function priorPassages(hex){const visits=history[String(hex||'').toLowerCase()]?.passages||[],cut=Date.now()-30*60000;return visits.filter(v=>Date.parse(v.last_seen)<cut)}
+function liveRepeatTag(prior){return prior.length?`<span class="tag repeat" title="Dernière fois : ${safe(dateText(prior.at(-1).last_seen))}">🔁 Déjà passé ${prior.length} fois</span>`:''}
 function emptyRow(tbody,cols,text){const tr=document.createElement('tr');tr.innerHTML=`<td class="empty" colspan="${cols}">${text}</td>`;tbody.append(tr)}
 const routeOf=(a,v)=>({airline:v?.airline||a.airline,origin:v?.origin||a.origin,destination:v?.destination||a.destination});
-const searchable=(a,v,r)=>[r.airline,a.owner,r.origin?.name,r.origin?.code,r.destination?.name,r.destination?.code,v?.flight,a.flight,a.r,a.t,a.model,a.desc,a.hex,historyCategory(a),kindInfo(kindKey(a)).label];
+const searchable=(a,v,r)=>[r.airline,a.owner,r.origin?.name,r.origin?.code,r.destination?.name,r.destination?.code,v?.flight,a.flight,a.r,a.t,a.model,a.desc,a.hex,historyCategory(a),kindInfo(kindKey(a)).label,(a.passages?.length>1?'deja vu repasse repassage':'')];
 const textMatch=(fields,q)=>!q||fields.some(x=>norm(x).includes(q));
 const query=()=>norm($('history-search').value).trim();
 
@@ -136,8 +140,8 @@ function renderToday(){
   if(!shown.length)return emptyRow(body,10,rows.length?'Aucun vol du jour ne correspond à ces filtres.':'Aucun passage enregistré aujourd’hui pour le moment.');
   if(shown.length>TODAY_VISIBLE_ROWS)$('today-status').textContent+=` · ${TODAY_VISIBLE_ROWS} premiers affichés, faites défiler pour voir les ${shown.length-TODAY_VISIBLE_ROWS} autres`;
   for(const {a,v,r,k} of shown){
-    const start=timeText(v.first_seen||v.last_seen),end=timeText(v.last_seen),tr=document.createElement('tr');
-    tr.innerHTML=`<td>${operatorCell(r,a)}</td><td>${airportCell(r.origin)}</td><td>${airportCell(r.destination)}</td><td>${cell(v.flight)}</td><td>${cell(a.r)}</td><td>${kindCell(k)}</td><td>${modelCell(a)}</td><td>${start===end?start:`${start} → ${end}`}</td><td>${catTag(historyCategory(a))}</td><td>${icaoLink(a.hex)}</td>`;
+    const start=timeText(v.first_seen||v.last_seen),end=timeText(v.last_seen),tr=document.createElement('tr'),i=a.passages.indexOf(v);
+    tr.innerHTML=`<td>${operatorCell(r,a)}</td><td>${airportCell(r.origin)}</td><td>${airportCell(r.destination)}</td><td>${cell(v.flight)}</td><td>${cell(a.r)}${repeatTag(i+1,i>0?a.passages[i-1].last_seen:null)}</td><td>${kindCell(k)}</td><td>${modelCell(a)}</td><td>${start===end?start:`${start} → ${end}`}</td><td>${catTag(historyCategory(a))}</td><td>${icaoLink(a.hex)}</td>`;
     body.append(tr);
   }
 }
@@ -152,7 +156,7 @@ function renderHistory(){
   if(!matches.length)return emptyRow(body,12,items.length?'Aucun résultat pour ces filtres.':'Aucun passage enregistré pour le moment.');
   for(const a of matches.slice(0,100)){
     const visits=a.passages,last=visits.at(-1),r=routeOf(a,last),tr=document.createElement('tr');
-    tr.innerHTML=`<td>${operatorCell(r,a)}</td><td>${airportCell(r.origin)}</td><td>${airportCell(r.destination)}</td><td>${cell(a.r)}</td><td>${kindCell(kindKey(a))}</td><td>${cell(last.flight||a.flight)}</td><td>${modelCell(a)}</td><td>${catTag(historyCategory(a))}</td><td>${dateText(last.last_seen)}</td><td class="num">${visits.length}</td><td>${visits.length>1?dateText(visits.at(-2).last_seen):unknown('aucun')}</td><td>${icaoLink(a.hex)}</td>`;
+    tr.innerHTML=`<td>${operatorCell(r,a)}</td><td>${airportCell(r.origin)}</td><td>${airportCell(r.destination)}</td><td>${cell(a.r)}</td><td>${kindCell(kindKey(a))}</td><td>${cell(last.flight||a.flight)}</td><td>${modelCell(a)}</td><td>${catTag(historyCategory(a))}</td><td>${dateText(last.last_seen)}</td><td class="num">${visits.length>1?`<span class="tag repeat">🔁 ${visits.length}</span>`:visits.length}</td><td>${visits.length>1?dateText(visits.at(-2).last_seen):unknown('aucun')}</td><td>${icaoLink(a.hex)}</td>`;
     body.append(tr);
   }
 }
@@ -184,9 +188,10 @@ function render(payload,source){lastPayload=payload;lastSource=source;markers.cl
   $('status').textContent=`${plural(inRange.length,'aéronef')} dans un rayon de ${radius} km${helis?` (dont ${plural(helis,'hélicoptère')})`:''}${planes.length!==inRange.length?` · ${planes.length} affiché${planes.length>1?'s':''}`:''} · ${source} · relevé à ${heure} (heure de Paris)${age>=3?` · il y a ${age} min`:''}`;
   if(!planes.length){const li=document.createElement('li');li.textContent=inRange.length?'Rien de ce genre dans ce rayon pour le moment.':'Rien ne vole dans ce rayon pour le moment.';$('list').append(li)}
   for(const a of planes){const info=kindInfo(a.kind), id=(a.flight||a.r||a.hex||'Appareil').trim(), speed=Number(a.gs), speedText=Number.isFinite(speed)?`${Math.round(km(speed))} km/h`:'Vitesse inconnue', detail=`${info.icon} ${info.label} · ${safe(a.t||'Type inconnu')} · ${altitude(a)} · ${speedText}${a.stale?' · position de quelques minutes':''}`, link=a.hex?`<a href="https://globe.airplanes.live/?icao=${encodeURIComponent(a.hex)}" target="_blank" rel="noopener noreferrer">Voir sur Airplanes.live ↗</a>`:'', previous=safe(previousVisit(a.hex)),route=routeDetails(currentRoute(a));
+    const prior=priorPassages(a.hex),again=liveRepeatTag(prior);
     const rotate=info.icon==='✈'?`transform:rotate(${Number(a.track)||0}deg)`:'';
-    const icon=L.divIcon({className:'plane-icon',html:`<span style="display:inline-block;${rotate}">${info.icon}</span>`,iconSize:[28,28],iconAnchor:[14,14]});const marker=L.marker([a.lat,a.lon],{icon,opacity:a.stale?.5:1}).addTo(markers).bindPopup(`<strong>${safe(id)}</strong><br>${detail}<br>${a.dist.toFixed(1)} km de Guiche<br>${category(a)} · Passage précédent : ${previous}<br>${route}<br>${link}`);
-    const li=document.createElement('li');li.innerHTML=`<div class="row"><strong>${safe(id)}</strong><span>${a.dist.toFixed(1)} km</span></div><div class="muted">${detail} · ${category(a)}</div><div class="visit">${route}</div><div class="visit">Passage précédent : ${previous}</div>`;li.onclick=()=>{map.setView([a.lat,a.lon],Math.max(map.getZoom(),11));marker.openPopup()};$('list').append(li)
+    const icon=L.divIcon({className:prior.length?'plane-icon repeat':'plane-icon',html:`<span style="display:inline-block;${rotate}">${info.icon}</span>`,iconSize:[28,28],iconAnchor:[14,14]});const marker=L.marker([a.lat,a.lon],{icon,opacity:a.stale?.5:1}).addTo(markers).bindPopup(`<strong>${safe(id)}</strong>${again}<br>${detail}<br>${a.dist.toFixed(1)} km de Guiche<br>${category(a)} · Passage précédent : ${previous}<br>${route}<br>${link}`);
+    const li=document.createElement('li');li.innerHTML=`<div class="row"><span><strong>${safe(id)}</strong>${again}</span><span>${a.dist.toFixed(1)} km</span></div><div class="muted">${detail} · ${category(a)}</div><div class="visit">${route}</div><div class="visit">Passage précédent : ${previous}</div>`;li.onclick=()=>{map.setView([a.lat,a.lon],Math.max(map.getZoom(),11));marker.openPopup()};$('list').append(li)
   }
 }
 async function refresh(){if(busy)return;busy=true;$('refresh').disabled=true;$('status').textContent='Recherche des aéronefs…';let error='';
