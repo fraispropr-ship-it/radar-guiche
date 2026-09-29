@@ -11,6 +11,13 @@ from urllib.parse import quote
 
 LAT, LON = 43.5128, -1.2028
 RADIUS_KM = 30
+# Aéroport de Biarritz : ses vols sont suivis même hors du cercle de 30 km autour de Guiche.
+BIQ_LAT, BIQ_LON = 43.4684, -1.5231
+BIQ_CODES = {'BIQ', 'LFBZ'}
+BIQ_LOCAL_KM = 12              # tout ce qui est bas et à moins de 12 km de la piste
+BIQ_LOCAL_MAX_FT = 5000
+ROUTE_CANDIDATE_MAX_FT = 20000 # au-dessus, c'est du survol : inutile de chercher sa route
+MAX_ROUTE_LOOKUPS = 40
 PASSAGE_GAP_SECONDS = 30 * 60
 STALE_POSITION_SECONDS = 300   # on garde une dernière position connue de moins de 5 min
 MAX_AIRCRAFT_LOOKUPS = 25      # fiches appareil adsbdb interrogées au maximum par exécution
@@ -125,8 +132,8 @@ except FileNotFoundError:
     history = {}
 
 
-def distance_km(lat, lon):
-    a, b, c, d = map(math.radians, (LAT, LON, lat, lon))
+def distance_km(lat, lon, lat0=LAT, lon0=LON):
+    a, b, c, d = map(math.radians, (lat0, lon0, lat, lon))
     h = math.sin((c-a)/2)**2 + math.cos(a)*math.cos(c)*math.sin((d-b)/2)**2
     return 12742 * math.asin(min(1, math.sqrt(h)))
 
@@ -177,15 +184,34 @@ def lookup_aircraft(hex_code):
     }
 
 
-nearby = []
+def altitude_ft(plane):
+    if plane.get('alt_baro') == 'ground':
+        return 0
+    for field in ('alt_baro', 'alt_geom'):
+        try:
+            return float(plane[field])
+        except (KeyError, TypeError, ValueError):
+            continue
+    return None
+
+
+def serves_biq(route):
+    if not route:
+        return False
+    return any(isinstance(route.get(k), dict) and str(route[k].get('code') or '').upper() in BIQ_CODES
+               for k in ('origin', 'destination'))
+
+
+# Position, distance à Guiche et à la piste de Biarritz pour tout ce qui est reçu (~100 km).
+positioned = []
 for plane in aircraft:
     if not plane.get('hex') or plane.get('lat') is None or plane.get('lon') is None:
         continue
     try:
-        if distance_km(float(plane['lat']), float(plane['lon'])) <= RADIUS_KM:
-            nearby.append(plane)
+        lat, lon = float(plane['lat']), float(plane['lon'])
     except (TypeError, ValueError):
         continue
+    positioned.append((plane, distance_km(lat, lon), distance_km(lat, lon, BIQ_LAT, BIQ_LON), altitude_ft(plane)))
 
 # La route est liée à l'indicatif du vol, pas à l'appareil : un même avion
 # peut effectuer un trajet différent lors de son prochain passage.
@@ -195,8 +221,31 @@ for item in history.values():
         flight = visit.get('flight')
         if flight and any(visit.get(k) for k in ('airline', 'origin', 'destination')):
             known_routes[flight] = {k: visit.get(k) for k in ('airline', 'origin', 'destination')}
-callsigns = {str(a.get('flight') or '').strip().upper() for a in nearby}
-missing = sorted(c for c in callsigns if c and c not in known_routes)
+
+# Routes à chercher : d'abord ce qui est près de Guiche, puis ce qui vole assez bas
+# pour être en montée ou en descente (candidats Biarritz), du plus proche de la piste au plus loin.
+ordered = sorted(positioned, key=lambda x: (x[1] > RADIUS_KM, x[2]))
+missing = []
+for plane, d_home, d_biq, alt in ordered:
+    callsign = str(plane.get('flight') or '').strip().upper()
+    if not callsign or callsign in known_routes or callsign in missing:
+        continue
+    if d_home <= RADIUS_KM or alt is None or alt <= ROUTE_CANDIDATE_MAX_FT:
+        missing.append(callsign)
+missing = missing[:MAX_ROUTE_LOOKUPS]
+with ThreadPoolExecutor(max_workers=6) as pool:
+    known_routes.update(zip(missing, pool.map(lookup_route, missing)))
+
+# On enregistre : tout ce qui est à moins de 30 km de Guiche, les vols au départ ou à
+# l'arrivée de Biarritz, et tout ce qui est bas près de la piste (aviation légère, hélicos…).
+nearby, biq_count = [], 0
+for plane, d_home, d_biq, alt in positioned:
+    callsign = str(plane.get('flight') or '').strip().upper()
+    near_home = d_home <= RADIUS_KM
+    biq = serves_biq(known_routes.get(callsign)) or (d_biq <= BIQ_LOCAL_KM and alt is not None and alt <= BIQ_LOCAL_MAX_FT)
+    if near_home or biq:
+        nearby.append(plane)
+        biq_count += biq
 
 # Fiche appareil demandée une seule fois par appareil (utile surtout pour les hélicoptères,
 # qui n'ont presque jamais de compagnie ni de trajet).
@@ -208,7 +257,6 @@ for plane in nearby:
 to_lookup = to_lookup[:MAX_AIRCRAFT_LOOKUPS]
 
 with ThreadPoolExecutor(max_workers=6) as pool:
-    known_routes.update(zip(missing, pool.map(lookup_route, missing)))
     aircraft_info = dict(zip(to_lookup, pool.map(lookup_aircraft, to_lookup)))
 
 for plane in nearby:
@@ -255,4 +303,4 @@ for plane in nearby:
 root.joinpath('data.json').write_text(json.dumps(output, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
 history_path.write_text(json.dumps(history, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
 helis = sum(1 for a in nearby if history.get(str(a['hex']).lower(), {}).get('kind') == 'helicoptere')
-print(f'{len(aircraft)} aéronefs via {name} · {len(nearby)} dans {RADIUS_KM} km dont {helis} hélicoptère(s)')
+print(f'{len(aircraft)} aéronefs via {name} · {len(nearby)} enregistrés (dont {biq_count} liés à Biarritz, {helis} hélicoptère(s))')
