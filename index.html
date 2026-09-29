@@ -15,49 +15,173 @@
     .leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-shadow-pane img,.leaflet-container .leaflet-tile-pane img{max-width:none!important;max-height:none!important}
     .leaflet-zoom-animated{transform-origin:0 0}.leaflet-pane>svg path{pointer-events:visiblePainted}
     :root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#101827;color:#f1f5f9}
-    .history-title{margin:18px 0 8px;font-size:1.15rem}.history-search{width:100%;max-width:440px;background:#19334e;color:#fff;border:1px solid #47607a;border-radius:9px;padding:10px 12px;font:inherit}.visit{font-size:.85rem;color:#bad8e1;margin-top:5px}.history-note{margin:8px 0 20px}
+    .history-title{margin:18px 0 8px;font-size:1.15rem}.block-title{margin:22px 0 4px;font-size:1rem;color:#dbe7f3}.history-search{width:100%;max-width:440px;background:#19334e;color:#fff;border:1px solid #47607a;border-radius:9px;padding:10px 12px;font:inherit}.visit{font-size:.85rem;color:#bad8e1;margin-top:5px}.history-note{margin:8px 0 14px}
     *{box-sizing:border-box}body{margin:0}header{padding:17px 18px 12px;background:#111d30}h1{margin:0;font-size:1.5rem}p{margin:5px 0;color:#aebbd0;font-size:.9rem}.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}button,select{background:#19334e;color:#fff;border:1px solid #47607a;border-radius:9px;padding:10px 12px;font:inherit}button{cursor:pointer;background:#197d9d;border:0;font-weight:650}button:disabled{opacity:.55}#map{height:52vh;min-height:330px;background:#182b3e}main{max-width:1100px;margin:auto}.panel{padding:14px 18px}.status{color:#bad8e1;min-height:24px;font-size:.9rem}ul{list-style:none;padding:0;margin:9px 0 28px;display:grid;gap:8px}li{border:1px solid #294159;background:#17263a;border-radius:11px;padding:12px 14px;cursor:pointer}li:hover{background:#203750}.row{display:flex;justify-content:space-between;gap:12px}.muted{color:#aebbd0;font-size:.85rem;margin-top:5px}.plane-icon{background:none;border:0;text-shadow:0 1px 5px #000;font-size:24px;line-height:28px;text-align:center}.leaflet-popup-content{color:#172334}a{color:#6bc7e6}.leaflet-popup-content a{color:#006d8a}small{color:#99aabe}
+    /* Tableaux d'historique */
+    .table-wrap{overflow-x:auto;border:1px solid #294159;border-radius:11px;margin:9px 0 24px;-webkit-overflow-scrolling:touch}
+    table{width:100%;border-collapse:collapse;font-size:.87rem}
+    #today-table{min-width:1020px}#history-table{min-width:1200px}
+    th,td{padding:9px 11px;text-align:left;border-bottom:1px solid #22384f;white-space:nowrap;background:#17263a}
+    th{background:#19334e;color:#dbe7f3;font-weight:650}
+    tbody tr:last-child td{border-bottom:0}
+    tbody tr:hover td{background:#203750}
+    th:first-child,td:first-child{position:sticky;left:0;z-index:1;border-right:1px solid #294159;font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+    td.empty{white-space:normal;color:#aebbd0;font-weight:400;position:static}
+    .code{color:#8fb3c9;font-size:.8rem}.unknown{color:#6f8196}.owner{color:#cfe3ef;font-style:italic;font-weight:500}
+    .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.78rem;background:#294159;color:#cfdbe8}
+    .tag.mil{background:#6b2f2f;color:#ffd9d9}.tag.civ{background:#1d4d5c;color:#c9f1fb}
+    .num{text-align:right}
   </style>
 </head>
-<body><main><header><h1>✈ Radar de Guiche</h1><p>Quels avions passent près de chez nous ?</p><div class="controls"><label for="radius">Rayon</label><select id="radius"><option value="10">10 km</option><option value="30" selected>30 km</option><option value="50">50 km</option><option value="100">100 km</option></select><button id="refresh">Actualiser</button><small>Actualisation toutes les 60 s lorsque la page est ouverte</small></div></header><div id="map" aria-label="Carte des avions autour de Guiche"></div><section class="panel"><div id="status" class="status" role="status">Chargement…</div><ul id="list"></ul><h2 class="history-title">Historique des passages</h2><p class="history-note">Enregistré automatiquement dans un rayon de 30 km, environ toutes les 5 minutes. Un même passage reste groupé si l’appareil est revu dans les 30 minutes.</p><input id="history-search" class="history-search" type="search" placeholder="Rechercher un vol, une immatriculation, un identifiant…" aria-label="Rechercher dans l’historique"><div id="history-status" class="visit">Chargement de l’historique…</div><ul id="history-list"></ul><small>Positions ADS-B/MLAT selon la source disponible. Couverture variable ; ne pas utiliser pour la navigation.</small></section></main>
+<body><main><header><h1>✈ Radar de Guiche</h1><p>Tout ce qui vole près de chez nous : avions, hélicoptères, planeurs, ULM…</p><div class="controls"><label for="radius">Rayon</label><select id="radius"><option value="10">10 km</option><option value="30" selected>30 km</option><option value="50">50 km</option><option value="100">100 km</option></select><label for="kind">Genre</label><select id="kind"><option value="all" selected>Tout ce qui vole</option><option value="helico">Hélicoptères</option><option value="avion">Avions</option><option value="autre">Autres et inconnus</option></select><button id="refresh">Actualiser</button><small>Actualisation toutes les 60 s lorsque la page est ouverte</small></div></header><div id="map" aria-label="Carte des aéronefs autour de Guiche"></div><section class="panel"><div id="status" class="status" role="status">Chargement…</div><ul id="list"></ul>
+<h2 class="history-title">Historique des passages</h2>
+<p class="history-note">Enregistré automatiquement dans un rayon de 30 km, environ toutes les 5 minutes. Un même passage reste groupé si l’appareil est revu dans les 30 minutes.</p>
+<input id="history-search" class="history-search" type="search" placeholder="Rechercher une compagnie, un aéroport, un vol, « hélicoptère »…" aria-label="Rechercher dans l’historique">
+
+<h3 class="block-title">Vols de la journée</h3>
+<div id="today-status" class="visit">Chargement…</div>
+<div class="table-wrap"><table id="today-table"><thead><tr><th>Compagnie / propriétaire</th><th>Départ</th><th>Arrivée</th><th>Vol</th><th>Immatriculation</th><th>Genre</th><th>Modèle</th><th>Heure de passage</th><th>Statut</th><th>ICAO</th></tr></thead><tbody id="today-body"></tbody></table></div>
+
+<h3 class="block-title">Tout l’historique</h3>
+<div id="history-status" class="visit">Chargement de l’historique…</div>
+<div class="table-wrap"><table id="history-table"><thead><tr><th>Compagnie / propriétaire</th><th>Départ</th><th>Arrivée</th><th>Immatriculation</th><th>Genre</th><th>Dernier vol</th><th>Modèle</th><th>Statut</th><th>Dernier passage</th><th class="num">Passages</th><th>Passage précédent</th><th>ICAO</th></tr></thead><tbody id="history-body"></tbody></table></div>
+
+<small>Positions ADS-B/MLAT selon la source disponible. Couverture variable, surtout à basse altitude ; ne pas utiliser pour la navigation. Les trajets et propriétaires proviennent de la base adsbdb et peuvent être absents ou approximatifs. Les noms en italique sont des propriétaires enregistrés, pas des compagnies.</small></section></main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-const HOME=[43.5128,-1.2028], API='https://api.airplanes.live/v2/point/43.5128/-1.2028/55';
+const HOME=[43.5128,-1.2028], API='https://api.airplanes.live/v2/point/43.5128/-1.2028/55', STALE_POS_S=300;
 const map=L.map('map').setView(HOME,10); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap contributors'}).addTo(map);
 L.circleMarker(HOME,{radius:7,color:'#fff',weight:2,fillColor:'#11b9bd',fillOpacity:1}).addTo(map).bindPopup('Centre de Guiche');
-let ring=L.circle(HOME,{radius:30000,color:'#51d5da',weight:1,fillOpacity:.04}).addTo(map), markers=L.layerGroup().addTo(map), busy=false;
+let ring=L.circle(HOME,{radius:30000,color:'#51d5da',weight:1,fillOpacity:.04}).addTo(map), markers=L.layerGroup().addTo(map), busy=false, lastPayload=null, lastSource='';
 let history={};
 const $=id=>document.getElementById(id), km=nm=>nm*1.852;
+const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+
+/* ---------- Genre d'aéronef (catégorie d'émetteur ADS-B + type) ---------- */
+const KINDS={
+  helicoptere:{icon:'🚁',label:'Hélicoptère',group:'helico'},
+  avion:{icon:'✈',label:'Avion',group:'avion'},
+  avion_leger:{icon:'🛩',label:'Avion léger',group:'avion'},
+  chasse:{icon:'✈',label:'Avion rapide / chasse',group:'avion'},
+  planeur:{icon:'🛩',label:'Planeur',group:'autre'},
+  ulm:{icon:'🛩',label:'ULM',group:'autre'},
+  ballon:{icon:'🎈',label:'Ballon / dirigeable',group:'autre'},
+  parachutiste:{icon:'🪂',label:'Parachutiste',group:'autre'},
+  drone:{icon:'🛸',label:'Drone',group:'autre'},
+  spatial:{icon:'🚀',label:'Engin spatial',group:'autre'}
+};
+const UNKNOWN_KIND={icon:'✈',label:'Genre inconnu',group:'autre'};
+const EMITTER={A1:'avion_leger',A2:'avion',A3:'avion',A4:'avion',A5:'avion',A6:'chasse',A7:'helicoptere',B1:'planeur',B2:'ballon',B3:'parachutiste',B4:'ulm',B6:'drone',B7:'spatial'};
+const HELI_TYPES=new Set(['EC20','EC25','EC30','EC35','EC45','EC55','EC75','H160','BK17','AS50','AS55','AS65','AS32','AS3B','ALO2','ALO3','LAMA','GAZL','PUMA','NH90','TIGR','EH10','G2CA','A109','A119','A129','A139','A149','A169','A189','B06','B06T','B47G','B407','B412','B429','B505','R22','R44','R66','S76','S92','H60','H64','UH1','H500','EXPL','EN28','EN48']);
+function kindKey(a){
+  if(a.kind&&KINDS[a.kind])return a.kind;
+  const cat=String(a.category||'').toUpperCase(),t=String(a.t||'').toUpperCase(),d=String((a.desc||'')+' '+(a.model||'')).toUpperCase();
+  if(cat==='A7'||HELI_TYPES.has(t)||/COPTER|HELI/.test(d))return 'helicoptere';
+  if(EMITTER[cat])return EMITTER[cat];
+  const saved=history[String(a.hex||'').toLowerCase()]?.kind;
+  return KINDS[saved]?saved:null;
+}
+const kindInfo=k=>KINDS[k]||UNKNOWN_KIND;
+const kindAllowed=k=>{const f=$('kind').value;return f==='all'||kindInfo(k).group===f};
+const kindCell=k=>{const i=kindInfo(k);return `${i.icon} ${i.label}`};
+const isSurface=a=>/^C/.test(String(a.category||'').toUpperCase()); // véhicules au sol et obstacles
+function position(a){
+  const lat=Number(a.lat),lon=Number(a.lon);
+  if(a.lat!=null&&a.lon!=null&&Number.isFinite(lat)&&Number.isFinite(lon))return {lat,lon,stale:!!a.pos_stale};
+  const p=a.lastPosition; // dernière position connue quand l'appareil l'a perdue quelques instants
+  if(p&&p.lat!=null&&p.lon!=null&&Number(p.seen_pos??0)<=STALE_POS_S)return {lat:Number(p.lat),lon:Number(p.lon),stale:true};
+  return null;
+}
+
 function category(a){const saved=history[String(a.hex||'').toLowerCase()]?.category;if(a.dbFlags!=null&&Number.isFinite(Number(a.dbFlags)))return Number(a.dbFlags)&1?'Militaire':'Civil présumé';return saved==='militaire'?'Militaire':saved==='civil_presume'?'Civil présumé':'Statut inconnu'}
 function historyCategory(a){return a.category==='militaire'?'Militaire':a.category==='civil_presume'?'Civil présumé':'Statut inconnu'}
 function airport(a){if(!a||typeof a!=='object')return 'inconnu';const name=String(a.name||'').trim(),code=String(a.code||'').trim();return name&&code?`${name} (${code})`:name||code||'inconnu'}
-function routeDetails(a){return `Compagnie : ${safe(a.airline||'inconnue')} · Départ : ${safe(airport(a.origin))} → Arrivée : ${safe(airport(a.destination))}`}
+function routeDetails(a){const owner=history[String(a.hex||'').toLowerCase()]?.owner;return `${a.airline?`Compagnie : ${safe(a.airline)}`:owner?`Propriétaire : ${safe(owner)}`:'Compagnie : inconnue'} · Départ : ${safe(airport(a.origin))} → Arrivée : ${safe(airport(a.destination))}`}
 function currentRoute(a){const saved=history[String(a.hex||'').toLowerCase()],flight=String(a.flight||'').trim().toUpperCase();return a.origin||a.destination||a.airline?a:(saved?.passages?.at(-1)?.flight===flight?{...a,airline:saved.airline,origin:saved.origin,destination:saved.destination}:a)}
 const dateText=s=>s?new Date(s).toLocaleString('fr-FR',{timeZone:'Europe/Paris',dateStyle:'short',timeStyle:'short'}):'inconnue';
+const timeText=s=>s?new Date(s).toLocaleTimeString('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit'}):'—';
+const parisDay=s=>new Date(s).toLocaleDateString('fr-CA',{timeZone:'Europe/Paris'}); // AAAA-MM-JJ
 function previousVisit(hex){const visits=history[String(hex||'').toLowerCase()]?.passages||[];return visits.length>1?dateText(visits.at(-2).last_seen):visits.length?'Premier passage enregistré':'Aucun passage enregistré'}
-function renderHistory(){const items=Object.values(history).filter(a=>Array.isArray(a.passages)&&a.passages.length).sort((a,b)=>Date.parse(b.passages.at(-1).last_seen)-Date.parse(a.passages.at(-1).last_seen));const q=$('history-search').value.trim().toLowerCase();const matches=items.filter(a=>[a.hex,a.r,a.flight,a.t,a.airline,a.origin?.name,a.origin?.code,a.destination?.name,a.destination?.code,historyCategory(a)].some(x=>String(x||'').toLowerCase().includes(q))).slice(0,100);$('history-list').replaceChildren();$('history-status').textContent=`${items.length} appareil${items.length>1?'s':''} enregistré${items.length>1?'s':''}${items.length>100?' · 100 résultats affichés au maximum':''}`;if(!matches.length){const li=document.createElement('li');li.textContent=items.length?'Aucun résultat pour cette recherche.':'Aucun passage enregistré pour le moment.';$('history-list').append(li);return}for(const a of matches){const visits=a.passages,li=document.createElement('li');li.innerHTML=`<strong>${safe(a.r||a.flight||a.hex)}</strong> <span class="muted">${safe(a.flight||'')} · ${safe(a.t||'Type inconnu')} · ICAO ${safe(a.hex)} · ${historyCategory(a)}</span><div class="visit">Dernier passage : ${dateText(visits.at(-1).last_seen)} · ${visits.length} passage${visits.length>1?'s':''}</div><div class="visit">${routeDetails(visits.at(-1))}</div><div class="visit">Passage précédent : ${visits.length>1?dateText(visits.at(-2).last_seen):'aucun'}</div>`;$('history-list').append(li)}}
-async function loadHistory(){try{const res=await fetch(`history.json?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw Error('Historique indisponible');const data=await res.json();if(!data||Array.isArray(data)||typeof data!=='object')throw Error('Format inattendu');history=data;renderHistory()}catch{$('history-status').textContent='Historique indisponible pour le moment.'}}
+const plural=(n,word)=>`${n} ${word}${n>1?'s':''}`;
+
+/* ---------- Cellules de tableau ---------- */
+const unknown=(t='inconnu')=>`<span class="unknown">${t}</span>`;
+const cell=v=>{const s=String(v??'').trim();return s?safe(s):unknown('—')};
+function airportCell(a){if(!a||typeof a!=='object')return unknown();const name=String(a.name||'').trim(),code=String(a.code||'').trim();if(!name&&!code)return unknown();return name?`${safe(name)}${code?` <span class="code">${safe(code)}</span>`:''}`:safe(code)}
+function operatorCell(r,a){if(r.airline)return `<span title="${safe(r.airline)}">${safe(r.airline)}</span>`;if(a.owner)return `<span class="owner" title="Propriétaire enregistré : ${safe(a.owner)}">${safe(a.owner)}</span>`;return unknown('inconnue')}
+function modelCell(a){const name=String(a.model||a.desc||'').trim(),code=String(a.t||'').trim();if(!name&&!code)return unknown('—');return name?`${safe(name)}${code?` <span class="code">${safe(code)}</span>`:''}`:safe(code)}
+function catTag(label){const cls=label==='Militaire'?'tag mil':label==='Civil présumé'?'tag civ':'tag';return `<span class="${cls}">${label}</span>`}
+function icaoLink(hex){return hex?`<a href="https://globe.airplanes.live/?icao=${encodeURIComponent(hex)}" target="_blank" rel="noopener noreferrer">${safe(String(hex).toUpperCase())} ↗</a>`:unknown('—')}
+function emptyRow(tbody,cols,text){const tr=document.createElement('tr');tr.innerHTML=`<td class="empty" colspan="${cols}">${text}</td>`;tbody.append(tr)}
+const routeOf=(a,v)=>({airline:v?.airline||a.airline,origin:v?.origin||a.origin,destination:v?.destination||a.destination});
+const searchable=(a,v,r)=>[r.airline,a.owner,r.origin?.name,r.origin?.code,r.destination?.name,r.destination?.code,v?.flight,a.flight,a.r,a.t,a.model,a.desc,a.hex,historyCategory(a),kindInfo(kindKey(a)).label];
+const textMatch=(fields,q)=>!q||fields.some(x=>norm(x).includes(q));
+const query=()=>norm($('history-search').value).trim();
+
+/* ---------- Bloc 1 : vols de la journée (une ligne par passage) ---------- */
+function renderToday(){
+  const today=parisDay(Date.now()),q=query(),body=$('today-body');body.replaceChildren();
+  const rows=[];
+  for(const a of Object.values(history)){
+    if(!Array.isArray(a.passages))continue;
+    for(const v of a.passages){if(v.last_seen&&parisDay(v.last_seen)===today)rows.push({a,v,r:routeOf(a,v),k:kindKey(a)})}
+  }
+  rows.sort((x,y)=>Date.parse(y.v.last_seen)-Date.parse(x.v.last_seen));
+  const companies=new Set(rows.map(x=>x.r.airline).filter(Boolean)),helis=rows.filter(x=>x.k==='helicoptere').length;
+  $('today-status').textContent=`${plural(rows.length,'passage')} depuis minuit · ${plural(companies.size,'compagnie')} · ${plural(helis,'passage')} d’hélicoptère`;
+  const shown=rows.filter(x=>kindAllowed(x.k)&&textMatch(searchable(x.a,x.v,x.r),q));
+  if(!shown.length)return emptyRow(body,10,rows.length?'Aucun vol du jour ne correspond à ces filtres.':'Aucun passage enregistré aujourd’hui pour le moment.');
+  for(const {a,v,r,k} of shown){
+    const start=timeText(v.first_seen||v.last_seen),end=timeText(v.last_seen),tr=document.createElement('tr');
+    tr.innerHTML=`<td>${operatorCell(r,a)}</td><td>${airportCell(r.origin)}</td><td>${airportCell(r.destination)}</td><td>${cell(v.flight)}</td><td>${cell(a.r)}</td><td>${kindCell(k)}</td><td>${modelCell(a)}</td><td>${start===end?start:`${start} → ${end}`}</td><td>${catTag(historyCategory(a))}</td><td>${icaoLink(a.hex)}</td>`;
+    body.append(tr);
+  }
+}
+
+/* ---------- Bloc 2 : tout l'historique (une ligne par appareil) ---------- */
+function renderHistory(){
+  const items=Object.values(history).filter(a=>Array.isArray(a.passages)&&a.passages.length).sort((a,b)=>Date.parse(b.passages.at(-1).last_seen)-Date.parse(a.passages.at(-1).last_seen));
+  const q=query(),body=$('history-body');body.replaceChildren();
+  const helis=items.filter(a=>kindKey(a)==='helicoptere').length;
+  const matches=items.filter(a=>{const last=a.passages.at(-1);return kindAllowed(kindKey(a))&&textMatch(searchable(a,last,routeOf(a,last)),q)});
+  $('history-status').textContent=`${plural(items.length,'appareil')} enregistré${items.length>1?'s':''} dont ${plural(helis,'hélicoptère')}${matches.length>100?' · 100 résultats affichés au maximum':''}`;
+  if(!matches.length)return emptyRow(body,12,items.length?'Aucun résultat pour ces filtres.':'Aucun passage enregistré pour le moment.');
+  for(const a of matches.slice(0,100)){
+    const visits=a.passages,last=visits.at(-1),r=routeOf(a,last),tr=document.createElement('tr');
+    tr.innerHTML=`<td>${operatorCell(r,a)}</td><td>${airportCell(r.origin)}</td><td>${airportCell(r.destination)}</td><td>${cell(a.r)}</td><td>${kindCell(kindKey(a))}</td><td>${cell(last.flight||a.flight)}</td><td>${modelCell(a)}</td><td>${catTag(historyCategory(a))}</td><td>${dateText(last.last_seen)}</td><td class="num">${visits.length}</td><td>${visits.length>1?dateText(visits.at(-2).last_seen):unknown('aucun')}</td><td>${icaoLink(a.hex)}</td>`;
+    body.append(tr);
+  }
+}
+function renderAllHistory(){renderToday();renderHistory()}
+async function loadHistory(){try{const res=await fetch(`history.json?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw Error('Historique indisponible');const data=await res.json();if(!data||Array.isArray(data)||typeof data!=='object')throw Error('Format inattendu');history=data;renderAllHistory()}catch{$('history-status').textContent='Historique indisponible pour le moment.';$('today-status').textContent='Historique indisponible pour le moment.'}}
+
 function distance(lat,lon){const [a,b]=HOME.map(x=>x*Math.PI/180),c=lat*Math.PI/180,d=lon*Math.PI/180,x=Math.sin((c-a)/2)**2+Math.cos(a)*Math.cos(c)*Math.sin((d-b)/2)**2;return 6371*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 function safe(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function altitude(a){if(a.alt_baro==='ground')return 'Au sol';const ft=Number(a.alt_baro??a.alt_geom);return Number.isFinite(ft)?`${Math.round(ft*.3048).toLocaleString('fr-FR')} m`:'Altitude inconnue'}
-function render(payload,source){markers.clearLayers();$('list').replaceChildren();const radius=Number($('radius').value);ring.setRadius(radius*1000);
-  const planes=(payload.ac||[]).filter(a=>Number.isFinite(Number(a.lat))&&Number.isFinite(Number(a.lon))&&a.lat!=null&&a.lon!=null).map(a=>({...a,dist:distance(Number(a.lat),Number(a.lon))})).filter(a=>a.dist<=radius).sort((a,b)=>a.dist-b.dist);
+
+/* ---------- Carte et liste en direct ---------- */
+function render(payload,source){lastPayload=payload;lastSource=source;markers.clearLayers();$('list').replaceChildren();const radius=Number($('radius').value);ring.setRadius(radius*1000);
+  const inRange=(payload.ac||[]).filter(a=>!isSurface(a)).map(a=>{const p=position(a);return p?{...a,lat:p.lat,lon:p.lon,stale:p.stale,dist:distance(p.lat,p.lon),kind:kindKey(a)}:null}).filter(a=>a&&a.dist<=radius).sort((a,b)=>a.dist-b.dist);
+  const planes=inRange.filter(a=>kindAllowed(a.kind)),helis=inRange.filter(a=>a.kind==='helicoptere').length;
   // For the GitHub copy, use the moment our script saved it, rather than the upstream server clock.
   const rawTime=source==='copie GitHub'?payload.fetched_at:null;
   const epoch=Number(payload.now), upstreamTime=Number.isFinite(epoch)&&epoch>0?new Date(epoch*(epoch>1e11?1:1000)):null;
   let ts=rawTime?new Date(rawTime):(upstreamTime||new Date());if(!Number.isFinite(ts.getTime()))ts=new Date();
   const age=Math.max(0,Math.floor((Date.now()-ts.getTime())/60000));
   const heure=ts.toLocaleTimeString('fr-FR',{timeZone:'Europe/Paris',hour:'2-digit',minute:'2-digit'});
-  $('status').textContent=`${planes.length} appareil${planes.length>1?'s':''} dans un rayon de ${radius} km · ${source} · relevé à ${heure} (heure de Paris)${age>=3?` · il y a ${age} min`:''}`;
-  if(!planes.length){const li=document.createElement('li');li.textContent='Aucun avion repéré dans ce rayon pour le moment.';$('list').append(li)}
-  for(const a of planes){const id=(a.flight||a.r||a.hex||'Appareil').trim(), speed=Number(a.gs), speedText=Number.isFinite(speed)?`${Math.round(km(speed))} km/h`:'Vitesse inconnue', detail=`${safe(a.t||'Type inconnu')} · ${altitude(a)} · ${speedText}`, link=a.hex?`<a href="https://globe.airplanes.live/?icao=${encodeURIComponent(a.hex)}" target="_blank" rel="noopener noreferrer">Voir sur Airplanes.live ↗</a>`:'', previous=safe(previousVisit(a.hex)),route=routeDetails(currentRoute(a));
-    const icon=L.divIcon({className:'plane-icon',html:`<span style="display:inline-block;transform:rotate(${Number(a.track)||0}deg)">✈</span>`,iconSize:[28,28],iconAnchor:[14,14]});const marker=L.marker([a.lat,a.lon],{icon}).addTo(markers).bindPopup(`<strong>${safe(id)}</strong><br>${detail}<br>${a.dist.toFixed(1)} km de Guiche<br>${category(a)} · Passage précédent : ${previous}<br>${route}<br>${link}`);
+  $('status').textContent=`${plural(inRange.length,'aéronef')} dans un rayon de ${radius} km${helis?` (dont ${plural(helis,'hélicoptère')})`:''}${planes.length!==inRange.length?` · ${planes.length} affiché${planes.length>1?'s':''}`:''} · ${source} · relevé à ${heure} (heure de Paris)${age>=3?` · il y a ${age} min`:''}`;
+  if(!planes.length){const li=document.createElement('li');li.textContent=inRange.length?'Rien de ce genre dans ce rayon pour le moment.':'Rien ne vole dans ce rayon pour le moment.';$('list').append(li)}
+  for(const a of planes){const info=kindInfo(a.kind), id=(a.flight||a.r||a.hex||'Appareil').trim(), speed=Number(a.gs), speedText=Number.isFinite(speed)?`${Math.round(km(speed))} km/h`:'Vitesse inconnue', detail=`${info.icon} ${info.label} · ${safe(a.t||'Type inconnu')} · ${altitude(a)} · ${speedText}${a.stale?' · position de quelques minutes':''}`, link=a.hex?`<a href="https://globe.airplanes.live/?icao=${encodeURIComponent(a.hex)}" target="_blank" rel="noopener noreferrer">Voir sur Airplanes.live ↗</a>`:'', previous=safe(previousVisit(a.hex)),route=routeDetails(currentRoute(a));
+    const rotate=info.icon==='✈'?`transform:rotate(${Number(a.track)||0}deg)`:'';
+    const icon=L.divIcon({className:'plane-icon',html:`<span style="display:inline-block;${rotate}">${info.icon}</span>`,iconSize:[28,28],iconAnchor:[14,14]});const marker=L.marker([a.lat,a.lon],{icon,opacity:a.stale?.5:1}).addTo(markers).bindPopup(`<strong>${safe(id)}</strong><br>${detail}<br>${a.dist.toFixed(1)} km de Guiche<br>${category(a)} · Passage précédent : ${previous}<br>${route}<br>${link}`);
     const li=document.createElement('li');li.innerHTML=`<div class="row"><strong>${safe(id)}</strong><span>${a.dist.toFixed(1)} km</span></div><div class="muted">${detail} · ${category(a)}</div><div class="visit">${route}</div><div class="visit">Passage précédent : ${previous}</div>`;li.onclick=()=>{map.setView([a.lat,a.lon],Math.max(map.getZoom(),11));marker.openPopup()};$('list').append(li)
   }
 }
-async function refresh(){if(busy)return;busy=true;$('refresh').disabled=true;$('status').textContent='Recherche des avions…';let error='';
+async function refresh(){if(busy)return;busy=true;$('refresh').disabled=true;$('status').textContent='Recherche des aéronefs…';let error='';
   try{const res=await fetch(API,{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!res.ok)throw Error(`API ${res.status}`);const data=await res.json();if(!Array.isArray(data.ac))throw Error('Format inattendu');render(data,'direct')}catch(e){error=e.message;try{const res=await fetch(`data.json?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw Error(`HTTP ${res.status}`);const data=await res.json();if(!Array.isArray(data.ac))throw Error('Données indisponibles');render(data,'copie GitHub')}catch{markers.clearLayers();$('status').textContent=`Données indisponibles. Réessaie dans quelques minutes. (${error})`}}
   finally{busy=false;$('refresh').disabled=false}
 }
-$('refresh').onclick=()=>{loadHistory().then(refresh)};$('radius').onchange=refresh;$('history-search').oninput=renderHistory;loadHistory().then(refresh);setInterval(()=>{if(!document.hidden)refresh()},60000);setInterval(()=>{if(!document.hidden)loadHistory()},300000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){loadHistory().then(refresh)}});
+$('refresh').onclick=()=>{loadHistory().then(refresh)};$('radius').onchange=refresh;
+$('kind').onchange=()=>{if(lastPayload)render(lastPayload,lastSource);renderAllHistory()};
+$('history-search').oninput=renderAllHistory;loadHistory().then(refresh);setInterval(()=>{if(!document.hidden)refresh()},60000);setInterval(()=>{if(!document.hidden)loadHistory()},300000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){loadHistory().then(refresh)}});
 </script></body></html>
