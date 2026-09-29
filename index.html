@@ -26,6 +26,9 @@
     tbody tr:last-child td{border-bottom:0}
     tbody tr:hover td{background:#203750}
     th:first-child,td:first-child{position:sticky;left:0;z-index:1;border-right:1px solid #294159;font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+    #today-wrap{overflow:auto;max-height:480px;overscroll-behavior:contain}
+    #today-wrap thead th{position:sticky;top:0;z-index:2;box-shadow:0 1px 0 #294159}
+    #today-wrap thead th:first-child{left:0;z-index:3}
     td.empty{white-space:normal;color:#aebbd0;font-weight:400;position:static}
     .code{color:#8fb3c9;font-size:.8rem}.unknown{color:#6f8196}.owner{color:#cfe3ef;font-style:italic;font-weight:500}
     .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.78rem;background:#294159;color:#cfdbe8}
@@ -40,7 +43,7 @@
 
 <h3 class="block-title">Vols de la journée</h3>
 <div id="today-status" class="visit">Chargement…</div>
-<div class="table-wrap"><table id="today-table"><thead><tr><th>Compagnie / propriétaire</th><th>Départ</th><th>Arrivée</th><th>Vol</th><th>Immatriculation</th><th>Genre</th><th>Modèle</th><th>Heure de passage</th><th>Statut</th><th>ICAO</th></tr></thead><tbody id="today-body"></tbody></table></div>
+<div class="table-wrap" id="today-wrap"><table id="today-table"><thead><tr><th>Compagnie / propriétaire</th><th>Départ</th><th>Arrivée</th><th>Vol</th><th>Immatriculation</th><th>Genre</th><th>Modèle</th><th>Heure de passage</th><th>Statut</th><th>ICAO</th></tr></thead><tbody id="today-body"></tbody></table></div>
 
 <h3 class="block-title">Tout l’historique</h3>
 <div id="history-status" class="visit">Chargement de l’historique…</div>
@@ -131,6 +134,7 @@ function renderToday(){
   $('today-status').textContent=`${plural(rows.length,'passage')} depuis minuit · ${plural(companies.size,'compagnie')} · ${plural(helis,'passage')} d’hélicoptère`;
   const shown=rows.filter(x=>kindAllowed(x.k)&&textMatch(searchable(x.a,x.v,x.r),q));
   if(!shown.length)return emptyRow(body,10,rows.length?'Aucun vol du jour ne correspond à ces filtres.':'Aucun passage enregistré aujourd’hui pour le moment.');
+  if(shown.length>TODAY_VISIBLE_ROWS)$('today-status').textContent+=` · ${TODAY_VISIBLE_ROWS} premiers affichés, faites défiler pour voir les ${shown.length-TODAY_VISIBLE_ROWS} autres`;
   for(const {a,v,r,k} of shown){
     const start=timeText(v.first_seen||v.last_seen),end=timeText(v.last_seen),tr=document.createElement('tr');
     tr.innerHTML=`<td>${operatorCell(r,a)}</td><td>${airportCell(r.origin)}</td><td>${airportCell(r.destination)}</td><td>${cell(v.flight)}</td><td>${cell(a.r)}</td><td>${kindCell(k)}</td><td>${modelCell(a)}</td><td>${start===end?start:`${start} → ${end}`}</td><td>${catTag(historyCategory(a))}</td><td>${icaoLink(a.hex)}</td>`;
@@ -152,7 +156,15 @@ function renderHistory(){
     body.append(tr);
   }
 }
-function renderAllHistory(){renderToday();renderHistory()}
+const TODAY_VISIBLE_ROWS=10;
+function fitTodayHeight(){
+  const wrap=$('today-wrap'),head=wrap.querySelector('thead'),rows=[...$('today-body').rows];
+  if(rows.length<=TODAY_VISIBLE_ROWS){wrap.style.maxHeight='none';return}
+  const h=head.offsetHeight+rows.slice(0,TODAY_VISIBLE_ROWS).reduce((t,r)=>t+r.offsetHeight,0);
+  wrap.style.maxHeight=`${h+2}px`; // +2 px pour les bordures
+}
+function renderAllHistory(){renderToday();renderHistory();fitTodayHeight()}
+window.addEventListener('resize',fitTodayHeight);
 async function loadHistory(){try{const res=await fetch(`history.json?t=${Date.now()}`,{cache:'no-store'});if(!res.ok)throw Error('Historique indisponible');const data=await res.json();if(!data||Array.isArray(data)||typeof data!=='object')throw Error('Format inattendu');history=data;renderAllHistory()}catch{$('history-status').textContent='Historique indisponible pour le moment.';$('today-status').textContent='Historique indisponible pour le moment.'}}
 
 function distance(lat,lon){const [a,b]=HOME.map(x=>x*Math.PI/180),c=lat*Math.PI/180,d=lon*Math.PI/180,x=Math.sin((c-a)/2)**2+Math.cos(a)*Math.cos(c)*Math.sin((d-b)/2)**2;return 6371*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
