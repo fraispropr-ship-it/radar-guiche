@@ -117,7 +117,7 @@ function icaoLink(hex){return hex?`<a href="https://globe.airplanes.live/?icao=$
 const ordinal=n=>n===1?'1er':`${n}e`;
 function repeatTag(n,prev){return n>1?`<span class="tag repeat">🔁 ${ordinal(n)} passage${prev?` · précédent : ${safe(dateText(prev))}`:''}</span>`:''}
 function priorPassages(hex){const visits=history[String(hex||'').toLowerCase()]?.passages||[],cut=Date.now()-30*60000;return visits.filter(v=>Date.parse(v.last_seen)<cut)}
-function liveRepeatTag(prior){return prior.length?`<span class="tag repeat" title="Dernière fois : ${safe(dateText(prior.at(-1).last_seen))}">🔁 Déjà passé ${prior.length} fois</span>`:''}
+function liveRepeatTag(prior){return prior.length?repeatTag(prior.length+1,prior.at(-1).last_seen):''}
 function emptyRow(tbody,cols,text){const tr=document.createElement('tr');tr.innerHTML=`<td class="empty" colspan="${cols}">${text}</td>`;tbody.append(tr)}
 const routeOf=(a,v)=>({airline:v?.airline||a.airline,origin:v?.origin||a.origin,destination:v?.destination||a.destination});
 const searchable=(a,v,r)=>[r.airline,a.owner,r.origin?.name,r.origin?.code,r.destination?.name,r.destination?.code,v?.flight,a.flight,a.r,a.t,a.model,a.desc,a.hex,historyCategory(a),kindInfo(kindKey(a)).label,(a.passages?.length>1?'deja vu repasse repassage':'')];
