@@ -1,1 +1,1 @@
-{"now":1790806196501,"fetched_at":"2026-09-30T22:09:56.815841+00:00","source":"ADSB.lol","ac":[]}
+{"now":1790807100003,"fetched_at":"2026-09-30T22:25:00.821883+00:00","source":"ADSB.lol","ac":[{"hex":"4acb23","flight":"NSZ5053 ","r":"SE-RYC","t":"B38M","category":"A3","type":"adsb_icao","lat":42.953476,"lon":-1.724343,"alt_baro":37000,"alt_geom":38550,"gs":416.5,"track":198.48,"kind":"avion"}]}
