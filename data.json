@@ -1,1 +1,1 @@
-{"now":1790730049500,"fetched_at":"2026-09-30T01:00:49.973711+00:00","source":"ADSB.lol","ac":[]}
+{"now":1790730908500,"fetched_at":"2026-09-30T01:15:08.964535+00:00","source":"ADSB.lol","ac":[{"hex":"5083c0","flight":"VKA153  ","r":"UR-CQV","t":"AN26","category":"A2","type":"adsb_icao","lat":43.102531,"lon":-2.086748,"alt_baro":12750,"alt_geom":13400,"gs":227.7,"track":44.29,"dbFlags":8,"kind":"avion"}]}
