@@ -1,1 +1,1 @@
-{"now":1790736788500,"fetched_at":"2026-09-30T02:53:09.117094+00:00","source":"ADSB.lol","ac":[]}
+{"now":1790737258500,"fetched_at":"2026-09-30T03:00:59.057272+00:00","source":"ADSB.lol","ac":[{"hex":"a3c68c","flight":"UPS256  ","r":"N342UP","t":"B763","category":"A5","type":"adsb_icao","lat":43.791504,"lon":-0.956595,"alt_baro":37000,"alt_geom":38750,"gs":427.6,"track":207.58,"kind":"avion"}]}
