@@ -1,1 +1,1 @@
-{"now":1790740593001,"fetched_at":"2026-09-30T03:56:33.436138+00:00","source":"ADSB.lol","ac":[]}
+{"now":1790741174000,"fetched_at":"2026-09-30T04:06:14.525357+00:00","source":"ADSB.lol","ac":[{"hex":"4cad4b","flight":"ABR4CX  ","r":"EI-AZF","t":"B738","category":"A3","type":"adsb_icao","lat":43.771626,"lon":-1.546456,"alt_baro":38000,"alt_geom":39725,"gs":498.4,"track":24.92,"kind":"avion"}]}
