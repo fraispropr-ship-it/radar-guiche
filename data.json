@@ -1,1 +1,1 @@
-{"now":1790822680000,"fetched_at":"2026-10-01T02:44:40.401534+00:00","source":"ADSB.lol","ac":[{"hex":"3c542e","flight":"BCS41E  ","r":"D-AEAN","t":"A306","category":"A5","type":"adsb_icao","lat":43.622473,"lon":-1.142644,"alt_baro":31025,"alt_geom":32375,"gs":410.7,"track":205.07,"kind":"avion","airline":"European Air Transport","origin":{"name":"Brussels Airport","code":"BRU"},"destination":{"name":"Adolfo Suárez Madrid–Barajas Airport","code":"MAD"}}]}
+{"now":1790823326000,"fetched_at":"2026-10-01T02:55:26.382331+00:00","source":"ADSB.lol","ac":[]}
