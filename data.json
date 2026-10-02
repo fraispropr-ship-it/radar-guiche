@@ -1,1 +1,1 @@
-{"now":1790914299501,"fetched_at":"2026-10-02T04:11:40.007883+00:00","source":"ADSB.lol","ac":[]}
+{"now":1790915232000,"fetched_at":"2026-10-02T04:27:12.249132+00:00","source":"ADSB.lol","ac":[{"hex":"5140d2","flight":"SZN403  ","r":"4L-MWB","t":"B772","category":"A5","type":"adsb_icao","lat":44.129101,"lon":-1.301161,"alt_baro":36000,"alt_geom":37425,"gs":485.6,"track":21.76,"kind":"avion"}]}
