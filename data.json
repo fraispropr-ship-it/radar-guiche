@@ -1,1 +1,1 @@
-{"now":1790988147501,"fetched_at":"2026-10-03T00:42:27.802187+00:00","source":"ADSB.lol","ac":[]}
+{"now":1790988990501,"fetched_at":"2026-10-03T00:56:31.098737+00:00","source":"ADSB.lol","ac":[{"hex":"3451da","flight":"ANE3047 ","r":"EC-MJQ","t":"CRJX","category":"A3","type":"adsb_icao","lat":42.855757,"lon":-1.958902,"alt_baro":34000,"alt_geom":35450,"gs":436.9,"track":122.38,"kind":"avion"}]}
