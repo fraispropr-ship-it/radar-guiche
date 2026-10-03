@@ -1,1 +1,1 @@
-{"now":1790993684500,"fetched_at":"2026-10-03T02:14:45.090515+00:00","source":"ADSB.lol","ac":[]}
+{"now":1790994900500,"fetched_at":"2026-10-03T02:35:01.124912+00:00","source":"ADSB.lol","ac":[{"hex":"49d1c6","flight":"EWG1LC  ","r":"OK-TVT","t":"B738","category":"A3","type":"adsb_icao","lat":43.807755,"lon":-1.743185,"alt_baro":36000,"alt_geom":37425,"gs":453.0,"track":26.9,"kind":"avion"}]}
