@@ -1,1 +1,1 @@
-{"now":1791327844501,"fetched_at":"2026-10-06T23:04:04.735791+00:00","source":"ADSB.lol","ac":[{"hex":"020124","flight":"MAC228A ","r":"CN-NMJ","t":"A320","category":"A3","type":"adsb_icao","lat":43.728007,"lon":-1.327972,"alt_baro":37000,"alt_geom":38000,"gs":421.4,"track":195.55,"kind":"avion","airline":"Malta Air Charter","origin":{"name":"Cologne Bonn Airport","code":"CGN"},"destination":{"name":"Tangier Ibn Battouta Airport","code":"TNG"}}]}
+{"now":1791328684000,"fetched_at":"2026-10-06T23:18:04.540160+00:00","source":"ADSB.lol","ac":[]}
