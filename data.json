@@ -1,1 +1,1 @@
-{"now":1791251595500,"fetched_at":"2026-10-06T01:53:15.936885+00:00","source":"ADSB.lol","ac":[{"hex":"5110c3","flight":"AEG472  ","r":"ES-LSF","t":"SF34","type":"mlat","lat":43.184353,"lon":-1.572216,"alt_baro":22000,"gs":133.0,"track":49.0},{"hex":"345292","flight":"BCS4EP  ","r":"EC-MNM","t":"B734","category":"A3","type":"adsb_icao","lat":43.097457,"lon":-1.438751,"alt_baro":33000,"alt_geom":34375,"gs":423.6,"track":208.02,"kind":"avion"}]}
+{"now":1791252085000,"fetched_at":"2026-10-06T02:01:25.313692+00:00","source":"ADSB.lol","ac":[]}
