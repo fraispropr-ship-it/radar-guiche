@@ -1,1 +1,1 @@
-{"now":1791416085501,"fetched_at":"2026-10-07T23:34:45.950778+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791416802000,"fetched_at":"2026-10-07T23:46:42.402167+00:00","source":"ADSB.lol","ac":[{"hex":"4d2159","flight":"BRD902  ","r":"9H-GGF","t":"C56X","category":"A3","type":"adsb_icao","lat":43.312637,"lon":-1.293768,"alt_baro":37000,"alt_geom":37850,"gs":464.7,"track":207.56,"kind":"avion"}]}
