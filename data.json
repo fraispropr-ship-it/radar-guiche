@@ -1,1 +1,1 @@
-{"now":1791431606500,"fetched_at":"2026-10-08T03:53:27.023922+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791432154501,"fetched_at":"2026-10-08T04:02:34.832897+00:00","source":"ADSB.lol","ac":[{"hex":"440af5","flight":"TAY8VC  ","r":"OE-IWA","t":"B738","category":"A3","type":"adsb_icao","lat":43.706872,"lon":-1.375841,"alt_baro":33600,"alt_geom":34350,"gs":483.2,"track":217.18,"kind":"avion","airline":"ASL Airlines Belgium","origin":{"name":"Vitoria Airport","code":"VIT"},"destination":{"name":"Valencia Airport","code":"VLC"}}]}
