@@ -1,1 +1,1 @@
-{"now":1791508103501,"fetched_at":"2026-10-09T01:08:23.704378+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791509140500,"fetched_at":"2026-10-09T01:25:41.099024+00:00","source":"ADSB.lol","ac":[{"hex":"347302","flight":"BCS448  ","r":"EC-NXU","t":"B738","category":"A3","type":"adsb_icao","lat":43.902786,"lon":-1.297664,"alt_baro":35400,"alt_geom":36975,"gs":498.6,"track":210.63,"kind":"avion"}]}
