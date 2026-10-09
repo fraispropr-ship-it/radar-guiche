@@ -1,1 +1,1 @@
-{"now":1791511468501,"fetched_at":"2026-10-09T02:04:29.098490+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791512393500,"fetched_at":"2026-10-09T02:19:53.786856+00:00","source":"ADSB.lol","ac":[{"hex":"3c5431","flight":"BCS3UP  ","r":"D-AEAQ","t":"A306","category":"A5","type":"adsb_icao","lat":43.741791,"lon":-1.446107,"alt_baro":31500,"alt_geom":32925,"gs":517.9,"track":208.99,"kind":"avion"}]}
