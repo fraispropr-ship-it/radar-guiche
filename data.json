@@ -1,1 +1,1 @@
-{"now":1791673024500,"fetched_at":"2026-10-10T22:57:04.799481+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791673547500,"fetched_at":"2026-10-10T23:05:47.948531+00:00","source":"ADSB.lol","ac":[{"hex":"5140bc","flight":"CMS643  ","r":"4L-CMX","t":"B738","category":"A3","type":"adsb_icao","lat":42.868149,"lon":-1.248162,"alt_baro":32050,"alt_geom":33300,"gs":440.2,"track":61.81,"kind":"avion"}]}
