@@ -1,1 +1,1 @@
-{"now":1791604889001,"fetched_at":"2026-10-10T04:01:29.295204+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791605772500,"fetched_at":"2026-10-10T04:16:12.890537+00:00","source":"ADSB.lol","ac":[{"hex":"49d3d6","flight":"TVS4469 ","r":"OK-SWD","t":"B38M","category":"A3","type":"adsb_icao","lat":43.758545,"lon":-2.367681,"alt_baro":37000,"alt_geom":38225,"gs":437.6,"track":217.11,"kind":"avion"}]}
