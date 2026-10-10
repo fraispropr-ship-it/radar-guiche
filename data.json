@@ -1,1 +1,1 @@
-{"now":1791590457001,"fetched_at":"2026-10-10T00:00:57.315288+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791591795501,"fetched_at":"2026-10-10T00:23:15.830677+00:00","source":"ADSB.lol","ac":[{"hex":"461f63","flight":"FIN1676 ","r":"OH-LXB","t":"A320","category":"A3","type":"adsb_icao","lat":43.607204,"lon":-1.976951,"alt_baro":36000,"alt_geom":37375,"gs":453.2,"track":18.39,"kind":"avion"}]}
