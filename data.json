@@ -1,1 +1,1 @@
-{"now":1791595300501,"fetched_at":"2026-10-10T01:21:41.109658+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791596241000,"fetched_at":"2026-10-10T01:37:21.256230+00:00","source":"ADSB.lol","ac":[{"hex":"44ccd8","flight":"BEL24D  ","r":"OO-SFX","t":"A333","category":"A5","type":"adsb_icao","lat":43.511078,"lon":-2.054188,"alt_baro":38000,"alt_geom":39325,"gs":461.5,"track":26.23,"kind":"avion"}]}
