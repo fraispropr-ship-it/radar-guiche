@@ -1,1 +1,1 @@
-{"now":1791599440003,"fetched_at":"2026-10-10T02:30:40.316227+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791600358000,"fetched_at":"2026-10-10T02:45:58.369626+00:00","source":"ADSB.lol","ac":[{"hex":"440bc6","flight":"BCS8462 ","r":"OE-LNJ","t":"B752","category":"A4","type":"adsb_icao","lat":44.071655,"lon":-0.522374,"alt_baro":37000,"alt_geom":38150,"gs":422.7,"track":213.13,"kind":"avion"}]}
