@@ -1,1 +1,1 @@
-{"now":1791678131500,"fetched_at":"2026-10-11T00:22:11.747983+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791679659500,"fetched_at":"2026-10-11T00:47:39.689154+00:00","source":"ADSB.lol","ac":[{"hex":"44d1a6","flight":"JAF7XM  ","r":"OO-TMF","t":"B38M","category":"A3","type":"adsb_icao","lat":43.182358,"lon":-1.578007,"alt_baro":34000,"alt_geom":35350,"gs":427.7,"track":21.83,"kind":"avion"}]}
