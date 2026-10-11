@@ -1,1 +1,1 @@
-{"now":1791689736501,"fetched_at":"2026-10-11T03:35:36.955050+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791690683501,"fetched_at":"2026-10-11T03:51:23.859228+00:00","source":"ADSB.lol","ac":[{"hex":"0201d4","flight":"RAM702  ","category":"A3","type":"adsb_icao","lat":44.14977,"lon":-1.629312,"alt_baro":36000,"alt_geom":37275,"gs":422.2,"track":25.84,"kind":"avion"}]}
