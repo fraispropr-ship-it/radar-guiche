@@ -1,1 +1,1 @@
-{"now":1791770301000,"fetched_at":"2026-10-12T01:58:21.218304+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791771079500,"fetched_at":"2026-10-12T02:11:20.023949+00:00","source":"ADSB.lol","ac":[{"hex":"3c64ae","flight":"DLH1331 ","r":"D-AIEN","t":"A21N","category":"A3","type":"adsb_icao","lat":43.775208,"lon":-1.840657,"alt_baro":34000,"alt_geom":35725,"gs":395.4,"track":27.41,"kind":"avion"}]}
