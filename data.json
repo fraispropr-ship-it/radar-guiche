@@ -1,1 +1,1 @@
-{"now":1791858122000,"fetched_at":"2026-10-13T02:22:02.483097+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791859233501,"fetched_at":"2026-10-13T02:40:34.005768+00:00","source":"ADSB.lol","ac":[{"hex":"3c542c","flight":"BCS41E  ","r":"D-AEAL","t":"A306","category":"A5","type":"adsb_icao","lat":43.116496,"lon":-1.529715,"alt_baro":35000,"alt_geom":37050,"gs":477.8,"track":205.01,"kind":"avion"}]}
