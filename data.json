@@ -1,1 +1,1 @@
-{"now":1791940701000,"fetched_at":"2026-10-14T01:18:21.375010+00:00","source":"ADSB.lol","ac":[]}
+{"now":1791942364000,"fetched_at":"2026-10-14T01:46:04.630827+00:00","source":"ADSB.lol","ac":[{"hex":"34648a","flight":"BCS422  ","r":"EC-NMK","t":"B734","category":"A3","type":"adsb_icao","lat":43.155042,"lon":-0.83143,"alt_baro":27875,"alt_geom":29500,"gs":383.0,"track":236.93,"kind":"avion"}]}
