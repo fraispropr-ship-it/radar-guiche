@@ -1,1 +1,1 @@
-{"now":1791938759500,"fetched_at":"2026-10-14T00:46:00.021152+00:00","source":"ADSB.lol","ac":[{"hex":"4cad4b","flight":"ABR403  ","r":"EI-AZF","t":"B738","category":"A3","type":"adsb_icao","lat":43.477509,"lon":-1.161608,"alt_baro":37000,"alt_geom":38925,"gs":412.9,"track":208.18,"kind":"avion","airline":"ASL Airlines Ireland","origin":{"name":"Leipzig/Halle Airport","code":"LEJ"},"destination":{"name":"Adolfo Suárez Madrid–Barajas Airport","code":"MAD"}}]}
+{"now":1791940701000,"fetched_at":"2026-10-14T01:18:21.375010+00:00","source":"ADSB.lol","ac":[]}
