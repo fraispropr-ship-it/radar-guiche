@@ -1,1 +1,1 @@
-{"now":1792022057502,"fetched_at":"2026-10-14T23:54:17.955796+00:00","source":"ADSB.lol","ac":[]}
+{"now":1792022865501,"fetched_at":"2026-10-15T00:07:45.722623+00:00","source":"ADSB.lol","ac":[{"hex":"0200ae","flight":"RAM220M ","r":"CN-ROY","t":"B738","category":"A3","type":"adsb_icao","lat":43.88562,"lon":-1.467888,"alt_baro":34000,"alt_geom":35775,"gs":434.4,"track":24.91,"kind":"avion"}]}
