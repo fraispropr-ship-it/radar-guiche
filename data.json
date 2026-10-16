@@ -1,1 +1,1 @@
-{"now":1792107915001,"fetched_at":"2026-10-15T23:45:15.645587+00:00","source":"ADSB.lol","ac":[]}
+{"now":1792108808001,"fetched_at":"2026-10-16T00:00:08.361486+00:00","source":"ADSB.lol","ac":[{"hex":"461f9d","flight":"FIN1676 ","r":"OH-LZH","t":"A321","category":"A3","type":"adsb_icao","lat":43.545364,"lon":-1.635685,"alt_baro":33975,"alt_geom":35475,"gs":446.7,"track":24.33,"kind":"avion"}]}
