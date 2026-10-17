@@ -1,1 +1,1 @@
-{"now":1792205472000,"fetched_at":"2026-10-17T02:51:12.488130+00:00","source":"ADSB.lol","ac":[{"hex":"440bc4","flight":"BCS8462 ","r":"OE-LNH","t":"B752","category":"A4","type":"adsb_icao","lat":43.47453,"lon":-1.066197,"alt_baro":37000,"alt_geom":38200,"gs":435.6,"track":212.34,"kind":"avion","airline":"European Air Transport","origin":{"name":"Leipzig/Halle Airport","code":"LEJ"},"destination":{"name":"Adolfo Suárez Madrid–Barajas Airport","code":"MAD"}}]}
+{"now":1792206740500,"fetched_at":"2026-10-17T03:12:20.633248+00:00","source":"ADSB.lol","ac":[]}
