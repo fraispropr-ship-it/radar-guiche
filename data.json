@@ -1,1 +1,1 @@
-{"now":1792280386500,"fetched_at":"2026-10-17T23:39:47.452218+00:00","source":"ADSB.lol","ac":[]}
+{"now":1792282128001,"fetched_at":"2026-10-18T00:08:48.357365+00:00","source":"ADSB.lol","ac":[{"hex":"4ca61b","flight":"RYR9DC  ","r":"EI-DWM","t":"B738","category":"A3","type":"adsb_icao","lat":44.017593,"lon":-0.444755,"alt_baro":41000,"alt_geom":41825,"gs":453.6,"track":167.01,"kind":"avion"}]}
