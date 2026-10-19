@@ -1,1 +1,1 @@
-{"now":1792378921001,"fetched_at":"2026-10-19T03:02:01.633077+00:00","source":"ADSB.lol","ac":[]}
+{"now":1792380575500,"fetched_at":"2026-10-19T03:29:35.907241+00:00","source":"ADSB.lol","ac":[{"hex":"39de55","flight":"TVF41LM ","r":"F-HXSV","t":"A20N","category":"A3","type":"adsb_icao","lat":44.363525,"lon":-1.461443,"alt_baro":37975,"alt_geom":38500,"gs":455.7,"track":27.3,"kind":"avion"}]}
