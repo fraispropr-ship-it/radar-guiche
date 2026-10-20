@@ -1,1 +1,1 @@
-{"now":1792453807501,"fetched_at":"2026-10-19T23:50:07.949836+00:00","source":"ADSB.lol","ac":[]}
+{"now":1792454915500,"fetched_at":"2026-10-20T00:08:35.927560+00:00","source":"ADSB.lol","ac":[{"hex":"44d1a7","flight":"TFL65L  ","r":"OO-TMG","t":"B38M","category":"A3","type":"adsb_icao","lat":43.308746,"lon":-1.842637,"alt_baro":36000,"alt_geom":36550,"gs":473.8,"track":32.42,"kind":"avion"}]}
