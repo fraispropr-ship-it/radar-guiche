@@ -1,1 +1,1 @@
-{"now":1792638772502,"fetched_at":"2026-10-22T03:12:52.830335+00:00","source":"ADSB.lol","ac":[{"hex":"348517","flight":"SWT8MD  ","category":"A3","type":"adsb_icao","lat":43.436916,"lon":-1.26055,"alt_baro":35025,"alt_geom":36100,"gs":453.7,"track":204.76,"kind":"avion","airline":"Swiftair","origin":{"name":"Charles de Gaulle International Airport","code":"CDG"},"destination":{"name":"Adolfo Suárez Madrid–Barajas Airport","code":"MAD"}}]}
+{"now":1792640484500,"fetched_at":"2026-10-22T03:41:24.965342+00:00","source":"ADSB.lol","ac":[]}
