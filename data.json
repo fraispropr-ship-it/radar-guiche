@@ -1,1 +1,1 @@
-{"now":1792716410000,"fetched_at":"2026-10-23T00:46:50.315306+00:00","source":"ADSB.lol","ac":[]}
+{"now":1792718605500,"fetched_at":"2026-10-23T01:23:25.747123+00:00","source":"ADSB.lol","ac":[{"hex":"4643c5","flight":"FSF100A ","r":"OH-ZRH","t":"PC12","category":"A1","type":"adsb_icao","lat":43.246628,"lon":-1.383766,"alt_baro":28000,"alt_geom":28825,"gs":300.7,"track":20.85,"kind":"avion_leger"}]}
