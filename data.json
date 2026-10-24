@@ -1,1 +1,1 @@
-{"now":1792882764000,"fetched_at":"2026-10-24T22:59:24.772936+00:00","source":"ADSB.lol","ac":[]}
+{"now":1792883748501,"fetched_at":"2026-10-24T23:15:48.707172+00:00","source":"ADSB.lol","ac":[{"hex":"4867eb","flight":"TRA3M   ","r":"PH-YHO","t":"A21N","category":"A3","type":"adsb_icao","lat":43.869919,"lon":-1.760176,"alt_baro":36000,"alt_geom":37775,"gs":430.5,"track":24.42,"kind":"avion"}]}
