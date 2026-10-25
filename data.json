@@ -1,1 +1,1 @@
-{"now":1792901130500,"fetched_at":"2026-10-25T04:05:30.712350+00:00","source":"ADSB.lol","ac":[{"hex":"440bca","flight":"BCS927  ","r":"OE-LNQ","t":"B752","category":"A4","type":"adsb_icao","lat":44.206055,"lon":-1.660701,"alt_baro":38000,"alt_geom":39650,"gs":460.9,"track":22.45,"kind":"avion"}]}
+{"now":1792902704000,"fetched_at":"2026-10-25T04:31:44.879198+00:00","source":"ADSB.lol","ac":[{"hex":"0201d6","flight":"RAM706  ","category":"A3","type":"adsb_icao","lat":44.182636,"lon":-1.581377,"alt_baro":36000,"alt_geom":37675,"gs":469.2,"track":27.28,"kind":"avion"}]}
