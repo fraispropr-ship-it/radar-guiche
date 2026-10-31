@@ -1,1 +1,1 @@
-{"now":1793405020,"fetched_at":"2026-10-31T00:03:52.958629+00:00","source":"OpenSky","ac":[{"hex":"020104","flight":"RAM240S","lat":43.7551,"lon":-1.8736,"alt_baro":34000,"alt_geom":35250,"gs":403.5,"track":27.77},{"hex":"4ca9d0","flight":"RYR85UH","lat":43.0554,"lon":-0.3051,"alt_baro":32525,"alt_geom":33625,"gs":477.0,"track":252.93},{"hex":"4d21ef","flight":"RYR21LW","lat":43.0704,"lon":-1.4575,"alt_baro":37000,"alt_geom":38250,"gs":476.5,"track":208.18}]}
+{"now":1793424060500,"fetched_at":"2026-10-31T05:21:00.943612+00:00","source":"ADSB.lol","ac":[]}
